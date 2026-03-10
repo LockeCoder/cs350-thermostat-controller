@@ -1,47 +1,56 @@
-# CS350-thermostat-controller
-Thermostat controller final project and AHT20 temperature/humidity sensor integration.
-This repository includes two CS-350 (Emerging System Architectures and Technologies) portfolio artifacts that demonstrate the fundamentals of embedded systems: GPIO input/output, I2C sensor integration, LCD output, and state-driven program design.
+# CS350-final-thermostat-controller
+Thermostat controller final project artifact (CS-350).
+
+This repository includes the CS-350 final project artifact that demonstrates embedded systems fundamentals: GPIO input/output, I2C sensor integration, LCD output, UART telemetry, and state-driven program design.
 
 ## Artifact 1 (Primary): Thermostat Controller Final Project
-What it is: A thermostat-style controller that reads environmental data, displays system status on an LCD screen, and uses buttons to adjust a set point. LEDs indicate heating/cooling based on current conditions and temperature conditions.
-## Demo video: https://youtu.be/9B7xl2bdMHM
+What it is: A thermostat-style controller that reads temperature/humidity data from an AHT20 sensor over I2C, displays system status on a 16x2 LCD, and uses buttons (mode/up/down) to change operating mode and adjust a set point. LEDs indicate heating/cooling behavior based on the current mode and temperature conditions. UART output provides periodic telemetry.
 
-Note on feedback and validation: In instructor feedback, the video demonstrated solid red and blinking blue, and the buttons changing the set point, but did not fully demonstrate blinking red (heater running) or solid blue (cooling on but not currently running). In my final validation workflow, I use a short checklist to trigger and verify each required state (including “on but not running” vs “running” indicators) before recording the demo.
-## Artifact 2 (Option B): Temperature + Humidity Sensor Integration (AHT20 over I2C)
-What it is: A clean sensor integration that reads temperature/humidity from an AHT20 via I2C, displays readings on a 16x2 LCD, and uses a button press to toggle between Celsius and Fahrenheit.
+## Demo video: https://youtu.be/uvZeKR94jVU
 
-## Key features:
-•	 Uses I2C (board.SCL, board.SDA) with the AHTx0 driver to read temperature and relative humidity
+## System Design (State Machine)
+The software uses three modes/states: OFF, HEAT, and COOL, with transitions controlled by the mode button. The state-machine design is documented in the diagram included in this repository.
 
-•	 The LCD screen updates row 1 with the formatted measurement and row 2 with the date/time every 0.5 seconds
+## LED behavior requirements implemented:
+HEAT:
+• If temp < setpoint → red LED fades (actively heating)  
+• If temp >= setpoint → red LED solid (heating on but satisfied)  
 
-•	 Uses a GPIO button (BCM24) to toggle between devices (C/F)
+COOL:
+• If temp > setpoint → blue LED fades (actively cooling)  
+• If temp <= setpoint → blue LED solid (cooling on but satisfied)  
 
-•	 Verification steps to confirm the sensor is on the I2C bus at address 0x38: ls /dev/i2c* and sudo i2cdetect -y 
+OFF:
+• Both LEDs off  
 
 # Module Eight Journal Reflection
+
 ## Summarize the project and what problem it was solving
-These artifacts demonstrate the construction of an embedded-style system on a Raspberry Pi that integrates multiple hardware components and interfaces: LCD output, button input, and sensor communication. The “problem” being solved is to create a reliable, testable control-style application (thermostat) that reads real-world data, presents it clearly to the user, and responds to user input with predictable state-driven behavior.
+This artifact demonstrates the construction of an embedded-style control system on a Raspberry Pi that integrates multiple hardware components: LCD output, button input, LED status indicators, and I2C sensor communication. The problem being solved is to create a reliable, testable thermostat-style application that reads real-world data, presents it clearly to the user, and responds to user input with predictable state-driven behavior while also producing periodic telemetry.
+
 ## What did you do particularly well?
-I performed particularly well at systematic troubleshooting and integration. When the behavior was no longer consistent during full integration, I took a structured approach by breaking the component down, checking the GPIO pin map against the lab guide, checking power/ground, checking device detection via the I2C bus, and gradually building back up. On the code side, I took a pure loop/state-driven approach and used output to verify button presses and state changes.
+I performed particularly well at implementing clear requirements and validating behavior through structured integration. I built the system around explicit pin mappings, state logic, timed behaviors (LCD refresh and UART output interval), and PWM-based LED behavior to represent “active vs. satisfied” states. I also used runtime output and repeatable test sequences to verify button presses, state transitions, and sensor-driven behavior.
+
 ## Where could you improve?
-I can improve how I validate and demonstrate requirements under time pressure, especially during recordings. For example, feedback on the final demo noted missing visual confirmation for specific LED states (“running” vs “on but not running”). Going forward, I will use a short demo checklist that forces each required condition before recording so that all rubric elements are clearly demonstrated.
+I can improve how I validate and demonstrate requirements under time pressure, especially during recordings. Going forward, I will use a short checklist that forces each condition (heat running, heat satisfied, cool running, cool satisfied, off) and verifies it visually before recording so that all rubric elements are clearly demonstrated.
+
 ## What tools and/or resources are you adding to your support network?
-I am adding a more formal support/verification workflow: wiring validation checklists, consistent I2C verification steps (device detection and address confirmation), and a simple test script/checklist for triggering each state transition and LED condition prior to submission. I will continue using lab guides/rubrics as requirement references and use targeted debug output to confirm runtime behavior.
+I am adding a more formal verification workflow: wiring validation checklists, consistent I2C verification steps (device detection and address confirmation), and repeatable test scripts/checklists for triggering each state transition, LED condition, and LCD behavior prior to submission. I will continue using lab guides/rubrics as requirement references and use targeted debug output to confirm runtime behavior.
+
 ## What skills from this project will be particularly transferable to other projects and/or coursework?
 ### Transferable skills include:
-•	Hardware/software integration (GPIO input/output + I2C sensor communication)
-
-•	Debugging discipline (baseline → isolate → test one change → verify)
-
-•	State-machine and loop-based design for predictable system behavior
-
-•	Clear validation practices (observable outputs through LCD/LED + sensor detection checks)
+• Hardware/software integration (GPIO input/output + I2C sensor communication + LCD output + UART telemetry)  
+• Debugging discipline (baseline → isolate → test one change → verify)  
+• State-machine and loop-based design for predictable control behavior  
+• PWM-based LED signaling for “active vs. satisfied” system states  
+• Validation practices using observable outputs (LCD/LED) and repeatable test sequences  
 
 These apply directly to future embedded projects and any system that requires reliable integration and troubleshooting.
-## How did you make this project maintainable, readable, and adaptable?
-I kept the project maintainable by using a structured approach that separates responsibilities (sensor reads, display updates, and input handling) and by using clear naming and predictable control flow. The sensor integration uses a dedicated display wrapper and a small, readable loop to update the LCD and respond to a button toggle, which makes it easy to extend (additional sensors, new display formats, different update rates) without rewriting the full program.
-## Repository Contents
-•	TemperatureSensorIntegration.py (Artifact 2: AHT20 + LCD + button toggle)
 
-•	Adding a Temperature and Humidity Sensor.docx (Artifact 2 write-up) 
+## How did you make this project maintainable, readable, and adaptable?
+I kept the project maintainable by separating responsibilities (sensor reads, LED updates, LCD updates, UART output, and button handling) and driving behavior through a small set of states. This structure makes it easier to extend the project (new states, different sensors, alternate display formats, different telemetry intervals) without rewriting large sections of code.
+
+## Repository Contents
+• Thermostat.py (main implementation)  
+• StateMachine.drawio.pdf (state-machine diagram)  
+• Thermostat Lab.docx (project write-up)  
