@@ -2,13 +2,15 @@
 
 Temperature and humidity sensor integration artifact for CS-350.
 
-This repository includes a CS-350 embedded systems project that demonstrates hardware/software integration using GPIO input, I2C sensor communication, LCD output, and Python-based control logic on a Raspberry Pi.
+This repository contains a Raspberry Pi-based embedded systems project that demonstrates hardware/software integration using GPIO input, I2C sensor communication, LCD output, and Python-based control logic.
 
-## Artifact: AHT20 Sensor and LCD Integration
+## Project Scope
 
-This project integrates an AHT20 temperature/humidity sensor with a 16x2 LCD display. The application reads real-world temperature and humidity data over I2C, displays the readings on the LCD, and uses a GPIO button to toggle the temperature display between Celsius and Fahrenheit.
+This repository focuses on the AHT20 temperature/humidity sensor and LCD integration portion of the CS-350 thermostat controller sequence.
 
-This project was part of a larger CS-350 thermostat controller sequence involving embedded systems concepts such as GPIO, I2C communication, LCD output, state-driven behavior, and hardware/software troubleshooting.
+The project reads real-world temperature and humidity data from an AHT20 sensor over I2C, displays the readings on a 16x2 LCD, and uses a GPIO button to toggle the temperature display between Celsius and Fahrenheit.
+
+This artifact supports the larger thermostat controller sequence by demonstrating key embedded systems concepts, including GPIO input, I2C communication, LCD output, hardware/software troubleshooting, and repeatable validation.
 
 ## Demo Video
 
@@ -63,6 +65,18 @@ The project demonstrates how software can interact with external hardware compon
 4. A GPIO button toggles the temperature display between Celsius and Fahrenheit.
 5. The program refreshes the LCD continuously until stopped by the user.
 6. On exit, the program clears the LCD and releases GPIO resources.
+
+## Setup Notes
+
+This project is intended to run on a Raspberry Pi with the AHT20 sensor, LCD display, and GPIO button connected to the appropriate pins.
+
+Before running the script, verify:
+
+- The AHT20 sensor is detected over I2C
+- The LCD is wired correctly
+- The GPIO button is connected to the expected pin
+- Required Python libraries are installed
+- The script is being run on hardware that supports Raspberry Pi GPIO access
 
 ## Skills Demonstrated
 
